@@ -15,6 +15,7 @@
           '';
         };
 
+      lib.no-self.overlays = with builtins; mapAttrs (_: fn: inputs: fn (removeAttrs inputs [ "self" ])) lib.overlays;
       lib.overlays = with nixpkgs.lib; rec {
         # Get `overlays` List from all inputs.overlay.
         # overlayFrom :: AttrSet -> [Any]
@@ -46,8 +47,10 @@
           inputs: mapAttrs getOverlay (filterAttrs condition inputs);
       };
 
-      lib.no-self.overlays = with builtins; mapAttrs (_: fn: (inputs: fn (removeAttrs inputs [ "self" ]))) lib.overlays;
+      flattenAttrs = with nixpkgs.lib; attrs: fold (l: r: l // r) {} (mapAttrsToList (_: a: a) attrs);
     in
-      with builtins;
-      templates // lib;
+      templates
+      // flattenAttrs (removeAttrs lib [ "no-self" ])
+      // { no-self = flattenAttrs lib.no-self; }
+  ;
 }

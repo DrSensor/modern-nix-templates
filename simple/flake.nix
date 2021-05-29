@@ -9,7 +9,7 @@
   outputs = { self, nixpkgs, flake-utils, modern-nix, ... }@inputs:
     let
       inherit (flake-utils.lib) simpleFlake defaultSystems allSystems;
-      inherit (modern-nix.no-self.overlays) overlayFrom;
+      inherit (modern-nix.no-self) overlayFrom;
     in
       simpleFlake {
         inherit self nixpkgs;
