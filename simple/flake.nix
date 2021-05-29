@@ -3,11 +3,13 @@
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
+    modern-nix.url = "github:DrSensor/modern-nix-templates";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
+  outputs = { self, nixpkgs, flake-utils, modern-nix, ... }@inputs:
     let
       inherit (flake-utils.lib) simpleFlake defaultSystems allSystems;
+      inherit (modern-nix.no-self.overlays) overlayFrom;
     in
       simpleFlake {
         inherit self nixpkgs;
@@ -20,6 +22,6 @@
           #https://github.com/NixOS/nixpkgs/blob/master/lib/systems/doubles.nix
         ] ++ defaultSystems;
         overlay = final: prev: {};
-        preOverlays = [];
+        preOverlays = overlayFrom inputs;
       };
 }
