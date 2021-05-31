@@ -1,5 +1,5 @@
 {
-  description = throw "please give short `description` of your project here";
+  description = "An example of flake.nix to streamliine development toolchains";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -13,14 +13,17 @@
     in
       simpleFlake {
         inherit self nixpkgs;
-        name = throw "please specify the project `name` here";
+        name = "hello"; # map to package in nixpkgs+overlay+preOverlays
+
         shell = { pkgs }: with pkgs; mkShell {
           packages = [];
           inputsFrom = [];
         };
+
         systems = [
           #https://github.com/NixOS/nixpkgs/blob/master/lib/systems/doubles.nix
         ] ++ defaultSystems;
+
         overlay = final: prev: {};
         preOverlays = overlayFrom inputs;
       };
